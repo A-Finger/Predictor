@@ -1,19 +1,31 @@
 ﻿@inherits LayoutComponentBase
+@inject MudThemeProvider _mudThemeProvider
 
-<PageTitle>Predictor</PageTitle>
+<MudThemeProvider IsDarkMode="_isDurkMode" />
+<MudDialogProvider />
+<MudSnackbarProvider />
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+<MudLayout>
+	<MudAppBar Elevation="1">
+		<MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+		<MudText Typo="Typo.h5" Class="ml-3">Predictor Ltd</MudText>
+		<MudSpacer />
+		<MudToggleIconButton @bind-Toggled="_isDurkMode" Icon="@Icons.Material.Filled.LightMode" Color="@Color.Error" Title="Off" ToggledIcon="@Icons.Material.Filled.DarkMode" ToggledColor="@Color.Success" ToggledTitle="On" />
+		<MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
+	</MudAppBar>
+	<MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
+		@*NavMenu*@
+	</MudDrawer>
+	<MudMainContent>
+		@Body
+	</MudMainContent>
+</MudLayout>
+@code {
+	bool _drawerOpen = true;
+	bool _isDurkMode = true;
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-        </div>
-
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
+	void DrawerToggle()
+	{
+		_drawerOpen = !_drawerOpen;
+	}
+}

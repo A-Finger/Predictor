@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using MudBlazor;
+using MudBlazor.Services;
 using Predictor.Data;
 
 namespace Predictor
@@ -12,7 +14,9 @@ namespace Predictor
 
             // Add services to the container.
             builder.Services.AddRazorPages();
+            builder.Services.AddMudServices();
             builder.Services.AddServerSideBlazor();
+            builder.Services.AddScoped<MudThemeProvider>();
             builder.Services.AddSingleton<WeatherForecastService>();
 
             var app = builder.Build();
