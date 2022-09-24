@@ -6,15 +6,15 @@
 <MudSnackbarProvider />
 
 <MudLayout>
-	<MudAppBar Elevation="1">
+	<MudAppBar Elevation="1" Dense="false">
 		<MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
 		<MudText Typo="Typo.h5" Class="ml-3">Predictor Ltd</MudText>
 		<MudSpacer />
 		<MudToggleIconButton @bind-Toggled="_isDurkMode" Icon="@Icons.Material.Filled.LightMode" Color="@Color.Error" Title="Off" ToggledIcon="@Icons.Material.Filled.DarkMode" ToggledColor="@Color.Success" ToggledTitle="On" />
 		<MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
 	</MudAppBar>
-	<MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
-		@*NavMenu*@
+	<MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="1">
+		<NavMenu />
 	</MudDrawer>
 	<MudMainContent>
 		@Body
