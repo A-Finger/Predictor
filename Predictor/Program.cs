@@ -1,8 +1,11 @@
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
+using Microsoft.AspNetCore.Components.Authorization;
 using MudBlazor;
 using MudBlazor.Services;
+using Predictor.Authentication;
 using Predictor.Data;
+using Predictor.Services.Infrastructures;
+using Predictor.Services.Interfaces;
+using Predictor.Services.Repositories;
 
 namespace Predictor
 {
@@ -16,8 +19,12 @@ namespace Predictor
             builder.Services.AddRazorPages();
             builder.Services.AddMudServices();
             builder.Services.AddServerSideBlazor();
+            builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
+            builder.Services.AddSingleton<IUserAccess, MockAccountService>();
             builder.Services.AddScoped<MudThemeProvider>();
             builder.Services.AddSingleton<WeatherForecastService>();
+            builder.Services.AddScoped<ILocation, MockLoaction>();
+            builder.Services.AddScoped<IStateService, StateService>();
 
             var app = builder.Build();
 

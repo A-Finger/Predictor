@@ -1,9 +1,33 @@
-﻿<MudNavMenu Class="mud-width-full">
-	<MudNavLink Href="/counter" Icon="@Icons.Filled.Dashboard">ОД</MudNavLink>
-	<MudNavLink Href="/fetchdata" Icon="@Icons.Filled.Storage">Weather forecast</MudNavLink>
-	<MudNavLink Href="" Icon="@Icons.Filled.Receipt" Disabled="true">Billing</MudNavLink>
-	<MudNavGroup Title="Налаштування" Icon="@Icons.Filled.Settings" Expanded="false">
-		<MudNavLink Href="" Icon="@Icons.Filled.People" IconColor="Color.Success">Користувачі</MudNavLink>
-		<MudNavLink Href="" Icon="@Icons.Filled.Security" IconColor="Color.Info">Адмінка</MudNavLink>
-	</MudNavGroup>
-</MudNavMenu>
+﻿@using Predictor.Dialogs
+@inject IDialogService DialogService
+
+<AuthorizeView>
+	<Authorized>
+		<MudNavMenu Class="mud-width-full">
+			<MudNavGroup Title="ОД" Icon="@Icons.Filled.PointOfSale" Expanded="false">
+				<MudNavLink Href="" Icon="@Icons.Filled.PeopleOutline" IconColor="Color.Surface">Працівники</MudNavLink>
+				<MudNavLink Href="" Icon="@Icons.Filled.Security" IconColor="Color.Surface">Адмінка</MudNavLink>
+			</MudNavGroup>
+			<MudNavLink Href="/counter" Icon="@Icons.Filled.Dashboard">ОД</MudNavLink>
+			<MudNavLink Href="/fetchdata" Icon="@Icons.Filled.Storage">Weather forecast</MudNavLink>
+			<MudNavLink Href="" Icon="@Icons.Filled.Receipt" Disabled="true">Billing</MudNavLink>
+			<MudNavGroup Title="Налаштування" Icon="@Icons.Filled.Settings" Expanded="false">
+				<MudNavLink Href="" Icon="@Icons.Filled.People" IconColor="Color.Surface">Користувачі</MudNavLink>
+				<MudNavLink Href="" Icon="@Icons.Filled.Security" IconColor="Color.Error">Адмінка</MudNavLink>
+			</MudNavGroup>
+			<MudNavLink Href="/counter" Icon="@Icons.Filled.Logout" IconColor="Color.Surface">Logout</MudNavLink>
+		</MudNavMenu>
+	</Authorized>
+	<NotAuthorized>
+		<MudNavMenu Class="mud-width-full">
+			<MudNavLink OnClick="Login" Icon="@Icons.Filled.Login" IconColor="Color.Surface">Login</MudNavLink>
+		</MudNavMenu>
+	</NotAuthorized>
+</AuthorizeView>
+
+@code{
+	async Task Login(){
+		var dialog = DialogService.Show<LoginDialog>();
+		var result = await dialog.Result;
+	}
+}

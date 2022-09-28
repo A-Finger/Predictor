@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32901.215
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Predictor", "Predictor\Predictor.csproj", "{501B7EF5-65F4-497F-B5B9-FB3D2D508501}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Predictor", "Predictor\Predictor.csproj", "{501B7EF5-65F4-497F-B5B9-FB3D2D508501}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Predictor.Models", "Predictor.Models\Predictor.Models.csproj", "{259E6AA8-974B-4AAF-931C-015968DE92C9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Predictor.Models", "Predictor.Models\Predictor.Models.csproj", "{259E6AA8-974B-4AAF-931C-015968DE92C9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Predictor.Services", "Predictor.Services\Predictor.Services.csproj", "{C75A210C-4A7B-43DC-89D8-BE525F8936B0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Predictor.Services", "Predictor.Services\Predictor.Services.csproj", "{C75A210C-4A7B-43DC-89D8-BE525F8936B0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
