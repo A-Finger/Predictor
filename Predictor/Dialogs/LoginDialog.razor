@@ -1,4 +1,9 @@
-﻿<MudDialog>
+﻿@using Predictor.Authentication
+@using Predictor.Services.Interfaces
+@inject IUserAccess userAccess
+@inject NavigationManager navigation
+
+<MudDialog>
 	<TitleContent>
 		<MudText Typo="@Typo.h6">
 			<MudIcon Icon="@Icons.Filled.Login" Class="mr-3 mb-n1" />
@@ -6,8 +11,8 @@
 		</MudText>
 	</TitleContent>
 	<DialogContent>
-		<MudTextField @bind-Value="TextValue" Label="Login" Variant="Variant.Outlined" Adornment="Adornment.End" AdornmentIcon="@IconDanger" AdornmentColor="Color.Secondary"/>
-		<MudTextField @bind-Value="Password" Label="Password" Variant="Variant.Outlined" InputType="InputType.Password" Adornment="Adornment.End" AdornmentIcon="@IconDanger" AdornmentColor="Color.Secondary" />
+		<MudTextField @bind-Value="LoginText" Label="Login" Variant="Variant.Outlined" Adornment="Adornment.End" AdornmentIcon="@IconDanger" AdornmentColor="Color.Secondary" />
+		<MudTextField @bind-Value="PasswordText" Label="Password" Variant="Variant.Outlined" InputType="InputType.Password" Adornment="Adornment.End" AdornmentIcon="@IconDanger" AdornmentColor="Color.Secondary" />
 	</DialogContent>
 	<DialogActions>
 		<MudButton OnClick="Cancel" Color="Color.Error">Cancel</MudButton>
@@ -18,8 +23,8 @@
 @code {
 	[CascadingParameter] MudDialogInstance MudDialog { get; set; }
 
-	public string TextValue { get; set; } = null!;
-	public string Password { get; set; } = null!;
+	public string LoginText { get; set; } = String.Empty;
+	public string PasswordText { get; set; } = String.Empty;
 	private string IconDanger { get; set; } = "";
 
 	private void Cancel()
@@ -29,8 +34,28 @@
 
 	private async Task Login()
 	{
-		IconDanger = Icons.TwoTone.Dangerous;
-		await Task.Delay(3000);
-		IconDanger = "";
+		var userAccount = await userAccess.GetByLoginAsync(LoginText);
+
+		if (userAccount is null || userAccount.Password != PasswordText)
+		{
+			IconDanger = Icons.TwoTone.Dangerous;
+			await Task.Delay(3000);
+			IconDanger = "";
+		}
+		else
+		{
+			//var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+			//await customAuthStateProvider.UpdateAuthenticationStateAsync(new UserSession
+			//	{
+			//		UserName = userAccount.FirstName,
+			//		Role = userAccount.UserRole.Value
+
+			//	});
+			MudDialog.Close(DialogResult.Ok(new UserSession {
+				UserName = userAccount.FirstName,
+					Role = userAccount.UserRole.Value
+			}));
+			//navigation.NavigateTo("/", true);
+		}
 	}
 }

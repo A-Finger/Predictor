@@ -1,7 +1,16 @@
-﻿@using Predictor.Dialogs
+﻿@using Predictor.Authentication
+@using Predictor.Dialogs
+@using Predictor.Services.Interfaces
 @inject IDialogService DialogService
+@inject IUserAccess userAccess
+@inject AuthenticationStateProvider authStateProvider
 
 <AuthorizeView>
+	<NotAuthorized>
+		<MudNavMenu Class="mud-width-full">
+			<MudNavLink OnClick="Login" Icon="@Icons.Filled.Login" IconColor="Color.Surface">Login</MudNavLink>
+		</MudNavMenu>
+	</NotAuthorized>
 	<Authorized>
 		<MudNavMenu Class="mud-width-full">
 			<MudNavGroup Title="ОД" Icon="@Icons.Filled.PointOfSale" Expanded="false">
@@ -15,19 +24,29 @@
 				<MudNavLink Href="" Icon="@Icons.Filled.People" IconColor="Color.Surface">Користувачі</MudNavLink>
 				<MudNavLink Href="" Icon="@Icons.Filled.Security" IconColor="Color.Error">Адмінка</MudNavLink>
 			</MudNavGroup>
-			<MudNavLink Href="/counter" Icon="@Icons.Filled.Logout" IconColor="Color.Surface">Logout</MudNavLink>
+			<MudNavLink OnClick="Logout" Icon="@Icons.Filled.Logout" IconColor="Color.Surface">Logout</MudNavLink>
 		</MudNavMenu>
 	</Authorized>
-	<NotAuthorized>
-		<MudNavMenu Class="mud-width-full">
-			<MudNavLink OnClick="Login" Icon="@Icons.Filled.Login" IconColor="Color.Surface">Login</MudNavLink>
-		</MudNavMenu>
-	</NotAuthorized>
+
 </AuthorizeView>
 
-@code{
-	async Task Login(){
+@code {
+	async Task Login()
+	{
 		var dialog = DialogService.Show<LoginDialog>();
 		var result = await dialog.Result;
+		if (!result.Cancelled)
+		{
+			UserSession session = (UserSession)result.Data;
+
+			var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+			await customAuthStateProvider.UpdateAuthenticationStateAsync(session);
+		}
+	}
+
+	async Task Logout()
+	{
+		var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+		await customAuthStateProvider.UpdateAuthenticationStateAsync(null!);
 	}
 }
