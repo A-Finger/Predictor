@@ -6,5 +6,9 @@ namespace Predictor.Services.Interfaces
     {
         public Task<User?> GetByLoginAsync(string login);
         public Task<IEnumerable<User>> GetAllUsersAsync();
+        public Task AddUserAsync(User user);
+        public Task<IEnumerable<Department>> GetDepartmentsAsync();
+        public Task<IEnumerable<JobTitle>> GetJobTitlesAsync(Department department);
+        public Task<IEnumerable<JobTitle>> GetJobTitlesAsync();
     }
 }

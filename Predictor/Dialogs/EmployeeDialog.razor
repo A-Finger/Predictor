@@ -1,0 +1,83 @@
+﻿@page "/dep"
+
+@using Predictor.Models.Company
+@inject IUserAccess ua
+
+@if (Departments is not null)
+{
+	<MudSelect T="Department" Value="DepartmentValue" Label="Departments" ValueChanged="GetJobTitles" Variant="Variant.Outlined">
+		@foreach (var item in Departments)
+		{
+			<MudSelectItem T="Department" Value="item">@item.Name</MudSelectItem>
+		}
+	</MudSelect>
+	@if (DepartmentValue is not null)
+	{
+		<span>@DepartmentValue.Id</span>
+	}
+}
+@if (JobTitles is not null)
+{
+	<MudSelect T="JobTitle" Value="JobTitleValue" Variant="Variant.Outlined">
+		@foreach (var item in JobTitles)
+		{
+			<MudSelectItem T="JobTitle" Value="item">@item.Title</MudSelectItem>
+		}
+	</MudSelect>
+	@if (JobTitleValue is not null)
+	{
+		<span>@JobTitleValue.Id</span>
+	}
+}
+
+<MudDialog>
+	<TitleContent>
+		<MudText Typo="@Typo.h6">
+			<MudIcon Icon="@Icons.Filled.Login" Class="mr-3 mb-n1" />
+			Epmloyee
+		</MudText>
+	</TitleContent>
+	<DialogContent>
+		@if (Departments is not null)
+		{
+			<MudSelect T="Department" Label="Departments" @bind-Value="DepartmentValue" Variant="Variant.Outlined">
+				@foreach (var item in Departments)
+				{
+					<MudSelectItem T="Department" Value="item">@item.Name</MudSelectItem>
+				}
+			</MudSelect>
+		}
+	</DialogContent>
+	<DialogActions>
+		<MudButton Color="Color.Error">Cancel</MudButton>
+		<MudButton Color="Color.Secondary">Login</MudButton>
+	</DialogActions>
+</MudDialog>
+
+@code {
+	private IEnumerable<Department> Departments { get; set; } = null!;
+	private Department DepartmentValue { get; set; }
+	private IEnumerable<JobTitle> JobTitles { get; set; } = null!;
+	private JobTitle JobTitleValue { get; set; }
+
+	protected override async Task OnInitializedAsync()
+	{
+		Departments =  await ua.GetDepartmentsAsync();
+		DepartmentValue = Departments.First();
+		JobTitles = await ua.GetJobTitlesAsync(DepartmentValue);
+		JobTitleValue = JobTitles.First();
+	}
+
+	async Task GetJobTitles(Department department)
+	{
+		if (department is not null)
+		{
+			await Task.Run(async() =>
+			{
+				DepartmentValue = department;
+				JobTitles = await ua.GetJobTitlesAsync(department);
+				JobTitleValue = JobTitles.First();
+			});
+		}
+	}
+}

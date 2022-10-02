@@ -1,0 +1,56 @@
+﻿@page "/employees"
+@using Predictor.Models.Company
+
+@inject IUserAccess UserAccess;
+
+<PageTitle>Працівникі</PageTitle>
+<MudPaper Elevation="1">
+	<MudToolBar>
+		<MudIconButton Title="Додати працівника" Icon="@Icons.Filled.PersonAddAlt1" />
+		<MudIconButton Title="Фільтр за відділом" Icon="@Icons.Filled.FilterList" />
+		<MudSpacer />
+		<MudIconButton Title="Сортувати" Icon="@Icons.Filled.Sort" />
+	</MudToolBar>
+</MudPaper>
+@if (Users is not null)
+{
+
+	<MudContainer Class="mt-4 px-4" MaxWidth="MaxWidth.False">
+		<MudGrid>
+			@foreach (var u in Users)
+			{
+				<MudItem xs="12" sm="6" md="4">
+					<MudCard>
+						<MudCardHeader>
+							<CardHeaderContent>
+								<MudText Typo="Typo.h6">@u.FirstName @u.LastName</MudText>
+							</CardHeaderContent>
+							<CardHeaderActions>
+								<MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default" />
+							</CardHeaderActions>
+						</MudCardHeader>
+						<MudCardContent>
+							<MudText>Відділ: @u.JobTitle.Department.Name</MudText>
+							<MudText>Посада: @u.JobTitle.Title</MudText>
+							<MudText>Керівник: @u.Leader.FirstName @u.Leader.LastName</MudText>
+						</MudCardContent>
+						<MudCardActions>
+							<MudButton Variant="Variant.Text" Color="Color.Primary">Read More</MudButton>
+						</MudCardActions>
+					</MudCard>
+				</MudItem>
+			}
+		</MudGrid>
+	</MudContainer>
+
+}
+
+@code {
+
+	private IEnumerable<User> Users { get; set; } = null!;
+
+	protected override async Task OnInitializedAsync()
+	{
+		Users = await UserAccess.GetAllUsersAsync();
+	}
+}

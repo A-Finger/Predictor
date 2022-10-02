@@ -1,5 +1,4 @@
 ﻿@using Predictor.Authentication
-@using Predictor.Services.Interfaces
 @inject IUserAccess userAccess
 @inject NavigationManager navigation
 
@@ -12,7 +11,7 @@
 	</TitleContent>
 	<DialogContent>
 		<MudTextField @bind-Value="LoginText" Label="Login" Variant="Variant.Outlined" Adornment="Adornment.End" AdornmentIcon="@IconDanger" AdornmentColor="Color.Secondary" />
-		<MudTextField @bind-Value="PasswordText" Label="Password" Variant="Variant.Outlined" InputType="InputType.Password" Adornment="Adornment.End" AdornmentIcon="@IconDanger" AdornmentColor="Color.Secondary" />
+		<MudTextField @bind-Value="PasswordText"  Label="Password" Variant="Variant.Outlined" InputType="InputType.Password" Adornment="Adornment.End" AdornmentIcon="@IconDanger" AdornmentColor="Color.Secondary" />
 	</DialogContent>
 	<DialogActions>
 		<MudButton OnClick="Cancel" Color="Color.Error">Cancel</MudButton>
@@ -23,13 +22,18 @@
 @code {
 	[CascadingParameter] MudDialogInstance MudDialog { get; set; }
 
-	public string LoginText { get; set; } = String.Empty;
-	public string PasswordText { get; set; } = String.Empty;
+	public string LoginText { get; set; } = string.Empty;
+	public string PasswordText { get; set; } = string.Empty;
 	private string IconDanger { get; set; } = "";
 
 	private void Cancel()
 	{
 		MudDialog.Cancel();
+	}
+
+	private void IconDangerReset()
+	{
+		IconDanger = string.Empty;
 	}
 
 	private async Task Login()
@@ -39,8 +43,8 @@
 		if (userAccount is null || userAccount.Password != PasswordText)
 		{
 			IconDanger = Icons.TwoTone.Dangerous;
-			await Task.Delay(3000);
-			IconDanger = "";
+			//await Task.Delay(3000);
+			//IconDanger = "";
 		}
 		else
 		{
@@ -51,11 +55,12 @@
 			//		Role = userAccount.UserRole.Value
 
 			//	});
-			MudDialog.Close(DialogResult.Ok(new UserSession {
-				UserName = userAccount.FirstName,
+			MudDialog.Close(DialogResult.Ok(new UserSession
+				{
+					UserName = userAccount.FirstName,
 					Role = userAccount.UserRole.Value
-			}));
-			//navigation.NavigateTo("/", true);
+				}));
+			navigation.NavigateTo("/", true);
 		}
 	}
 }
