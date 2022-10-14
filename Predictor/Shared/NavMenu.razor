@@ -1,5 +1,4 @@
 ﻿@using Predictor.Authentication
-@using Predictor.Dialogs
 @using Predictor.Services.Interfaces
 @inject IDialogService DialogService
 @inject IUserAccess userAccess
@@ -33,7 +32,7 @@
 @code {
 	async Task Login()
 	{
-		var dialog = DialogService.Show<LoginDialog>();
+		var dialog = DialogService.Show<LoginDialog>("Login");
 		var result = await dialog.Result;
 		if (!result.Cancelled)
 		{

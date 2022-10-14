@@ -1,83 +1,127 @@
 ﻿@page "/dep"
 
 @using Predictor.Models.Company
+@using System.Text
 @inject IUserAccess ua
 
-@if (Departments is not null)
-{
-	<MudSelect T="Department" Value="DepartmentValue" Label="Departments" ValueChanged="GetJobTitles" Variant="Variant.Outlined">
-		@foreach (var item in Departments)
-		{
-			<MudSelectItem T="Department" Value="item">@item.Name</MudSelectItem>
-		}
-	</MudSelect>
-	@if (DepartmentValue is not null)
-	{
-		<span>@DepartmentValue.Id</span>
-	}
-}
-@if (JobTitles is not null)
-{
-	<MudSelect T="JobTitle" Value="JobTitleValue" Variant="Variant.Outlined">
-		@foreach (var item in JobTitles)
-		{
-			<MudSelectItem T="JobTitle" Value="item">@item.Title</MudSelectItem>
-		}
-	</MudSelect>
-	@if (JobTitleValue is not null)
-	{
-		<span>@JobTitleValue.Id</span>
-	}
-}
-
-<MudDialog>
-	<TitleContent>
-		<MudText Typo="@Typo.h6">
-			<MudIcon Icon="@Icons.Filled.Login" Class="mr-3 mb-n1" />
-			Epmloyee
-		</MudText>
-	</TitleContent>
+<MudDialog DisableSidePadding="true" Style="min-width:50%; width: auto; height: stretch; overflow-y: scroll">
 	<DialogContent>
-		@if (Departments is not null)
-		{
-			<MudSelect T="Department" Label="Departments" @bind-Value="DepartmentValue" Variant="Variant.Outlined">
-				@foreach (var item in Departments)
-				{
-					<MudSelectItem T="Department" Value="item">@item.Name</MudSelectItem>
-				}
-			</MudSelect>
-		}
+		<MudContainer>
+			@if (Departments is null)
+			{
+				<span>Loading ...</span>
+			}
+			else
+			{
+				<MudSelect T="Department" Value="DepartmentValue" Class="my-2" Label="Відділ" ValueChanged="DepartmentValueChangedAsync" Variant="Variant.Outlined" Margin="Margin.Dense">
+
+					@foreach (var item in Departments)
+					{
+						<MudSelectItem T="Department" Value="item">@item.Name</MudSelectItem>
+					}
+				</MudSelect>
+			}
+			@if (JobTitles is not null)
+			{
+				<MudSelect T="JobTitle" @bind-Value="JobTitleValue" Class="my-2" Label="Посада" Variant="Variant.Outlined" Margin="Margin.Dense">
+					@foreach (var item in JobTitles)
+					{
+						<MudSelectItem T="JobTitle" Value="item">@item.Name</MudSelectItem>
+					}
+				</MudSelect>
+			}
+			<MudTextField @bind-Value="LastName" Class="my-3" Label="Прізвище" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+			<MudTextField @bind-Value="FirstName" Class="my-3" Label="Ім'я" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+			<MudTextField @bind-Value="MidleName" Class="my-3" Label="По батькові" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+
+			@if (UserRoles is not null)
+			{
+				<MudSelect T="UserRole" @bind-Value="UserRoleValue" Class="my-2" Label="Роль користувача" Variant="Variant.Outlined" Margin="Margin.Dense">
+					@foreach (var item in UserRoles)
+					{
+						<MudSelectItem T="UserRole" Value="item">@item.Value</MudSelectItem>
+					}
+				</MudSelect>
+			}
+			<MudTextField @bind-Value="Login" Class="my-3" Label="Login" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+			<MudTextField @bind-Value="Password" Class="my-3" Label="Password" Variant="Variant.Outlined" Margin="Margin.Dense" Adornment="Adornment.End" OnAdornmentClick="CreatePassword" AdornmentIcon="@Icons.Filled.Api" />
+			<MudTextField @bind-Value="Email" Class="my-3" Label="E-mail" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+			<MudTextField @bind-Value="Phone" Class="my-3" Label="Телефон" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+		</MudContainer>
 	</DialogContent>
 	<DialogActions>
-		<MudButton Color="Color.Error">Cancel</MudButton>
-		<MudButton Color="Color.Secondary">Login</MudButton>
+		<MudButton OnClick="Cancel" Color="Color.Error">Cancel</MudButton>
+		<MudButton OnClick="Add" Color="Color.Primary">Add</MudButton>
 	</DialogActions>
 </MudDialog>
 
 @code {
+	[CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
+
+	private string FirstName { get; set; } = string.Empty;
+	private string MidleName { get; set; } = string.Empty;
+	private string LastName { get; set; } = string.Empty;
+	private string Login { get; set; } = null!;
+	private string Password { get; set; } = null!;
+	private string Email { get; set; } = null!;
+	private string Phone { get; set; } = null!;
+	private User? Leader { get; set; }
 	private IEnumerable<Department> Departments { get; set; } = null!;
-	private Department DepartmentValue { get; set; }
+	private Department DepartmentValue { get; set; } = null!;
 	private IEnumerable<JobTitle> JobTitles { get; set; } = null!;
-	private JobTitle JobTitleValue { get; set; }
+	private JobTitle JobTitleValue { get; set; } = null!;
+	private IEnumerable<UserRole> UserRoles { get; set; } = null!;
+	private UserRole UserRoleValue { get; set; } = null!;
 
 	protected override async Task OnInitializedAsync()
 	{
-		Departments =  await ua.GetDepartmentsAsync();
-		DepartmentValue = Departments.First();
+		Departments = await ua.GetDepartmentsAsync();
+		DepartmentValue = Departments.First(x => x.UpperId == 0);
 		JobTitles = await ua.GetJobTitlesAsync(DepartmentValue);
 		JobTitleValue = JobTitles.First();
+		UserRoles = (await ua.GetUserRolesAsync()).Where(x => x.Id != 1);
+		UserRoleValue = UserRoles.First();
 	}
 
-	async Task GetJobTitles(Department department)
+	async Task DepartmentValueChangedAsync(Department department)
 	{
 		if (department is not null)
 		{
-			await Task.Run(async() =>
+			await Task.Run(() =>
 			{
 				DepartmentValue = department;
-				JobTitles = await ua.GetJobTitlesAsync(department);
+				JobTitles = ua.GetJobTitlesAsync(department).Result;
 				JobTitleValue = JobTitles.First();
 			});
 		}
+	}
+
+	public void CreatePassword()
+	{
+		int passLenth = 10;
+		const string valid = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+		StringBuilder res = new StringBuilder(passLenth);
+		Random rnd = new Random();
+		while (0 < passLenth--)
+		{
+			res.Append(valid[rnd.Next(valid.Length)]);
+		}
+		Password = res.ToString();
+	}
+
+	private void Cancel()
+	{
+		MudDialog.Cancel();
+	}
+
+	private async Task Add()
+	{
+		var allUsers = await ua.GetAllUsersAsync();
+		int id = allUsers.Max(id => id.Id) + 1;
+		//var newUser = new User(id, Login, FirstName, MidleName, LastName, Phone, Email, Password, false,
+
+		var NewUser = new User(id, Login, FirstName, MidleName, LastName, Phone, Email, Password, false, UserRoleValue, JobTitleValue);
+
+		MudDialog.Close(DialogResult.Ok(NewUser));
 	}
 }

@@ -26,10 +26,7 @@ namespace Predictor.Models.Company
         public bool IsFired { get; set; }
         public int JobTitleId { get; set; }
         public int UserRoleId { get; set; }
-        public int LeaderId { get; set; }
 
-        [ForeignKey(nameof(LeaderId))]
-        public User Leader { get; set; } = null!;
         [ForeignKey(nameof(UserRoleId))]
         public UserRole UserRole { get; set; } = null!;
         [ForeignKey(nameof(JobTitleId))]
@@ -37,7 +34,9 @@ namespace Predictor.Models.Company
         public IEnumerable<User> Users { get; set; } = null!;
 
         public User() { }
-        public User(int id, string login, string firstName, string? midleName, string lastName, string? phone, string? email, string password, bool lockConfirmed, User leader, UserRole userRole, JobTitle jobTitle)
+        public User(
+            int id, string login, string firstName, string? midleName, string lastName, string? phone,
+            string? email, string password, bool lockConfirmed, UserRole userRole, JobTitle jobTitle)
         {
             Id = id;
             Login = login;
@@ -50,8 +49,6 @@ namespace Predictor.Models.Company
             IsLockConfirmed = lockConfirmed;
             JobTitleId = jobTitle.Id;
             UserRoleId = userRole.Id;
-            LeaderId = leader.Id;
-            Leader = leader;
             UserRole = userRole;
             JobTitle = jobTitle;
         }

@@ -10,5 +10,7 @@ namespace Predictor.Services.Interfaces
         public Task<IEnumerable<Department>> GetDepartmentsAsync();
         public Task<IEnumerable<JobTitle>> GetJobTitlesAsync(Department department);
         public Task<IEnumerable<JobTitle>> GetJobTitlesAsync();
+        public Task<IEnumerable<UserRole>> GetUserRolesAsync();
+        public Task<bool> TryAddUserAsync(User user);
     }
 }
