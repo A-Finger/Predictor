@@ -29,6 +29,5 @@ namespace Predictor.Models.Company
             UpperId = head.Id;
             Head = head;
         }
-
     }
 }

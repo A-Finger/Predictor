@@ -152,5 +152,15 @@ namespace Predictor.Services.Repositories
                 return true;
             });
         }
+
+        public async Task DeleteUserAsync(int id)
+        {
+            await Task.Run(() =>
+            {
+                var user = _users.FirstOrDefault(x => x.Id == id);
+                if (user is not null)
+                    _users.Remove(user);
+            });
+        }
     }
 }

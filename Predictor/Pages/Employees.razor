@@ -1,4 +1,5 @@
 ﻿@page "/employees"
+@attribute [Authorize]
 @using Predictor.Models.Company
 
 @inject IDialogService DialogService
@@ -17,21 +18,21 @@
 {
 	<MudContainer Class="mt-4 px-4" MaxWidth="MaxWidth.False">
 		<MudGrid>
-			@foreach (var u in Users)
+			@foreach (var user in Users)
 			{
 				<MudItem xs="12" sm="6" md="4">
 					<MudCard>
 						<MudCardHeader>
 							<CardHeaderContent>
-								<MudText Typo="Typo.h6">@u.FirstName @u.LastName</MudText>
+								<MudText Typo="Typo.h6">@user.FirstName @user.LastName</MudText>
 							</CardHeaderContent>
 							<CardHeaderActions>
-								<MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default" />
+								<MudIconButton Disabled="@(user.UserRoleId == 1 ? true : false)" Icon="@Icons.Filled.Delete" Color="Color.Default" OnClick="() => BtnDeleteUserAsync(user)" />
 							</CardHeaderActions>
 						</MudCardHeader>
 						<MudCardContent>
-							<MudText>Відділ: @u.JobTitle.Department.Name</MudText>
-							<MudText>Посада: @u.JobTitle.Name</MudText>
+							<MudText>Відділ: @user.JobTitle.Department.Name</MudText>
+							<MudText>Посада: @user.JobTitle.Name</MudText>
 						</MudCardContent>
 						<MudCardActions>
 							<MudButton Variant="Variant.Text" Color="Color.Primary">Read More</MudButton>
@@ -58,8 +59,29 @@
 		}
 	}
 
+	async Task BtnDeleteUserAsync(User user)
+	{
+		if (!user.UserRole.Value.Equals("Superadmin"))
+		{
+			var option = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small };
+			var parameters = new DialogParameters();
+			parameters.Add("User", user);
+			var dialog = DialogService.Show<DeleteDialog>("Видалити працывника", parameters, option);
+			var result = await dialog.Result;
+			if (!result.Cancelled)
+			{
+				await UserAccess.DeleteUserAsync(user.Id);
+			}
+		}
+	}
+
 	protected override async Task OnInitializedAsync()
 	{
 		Users = await UserAccess.GetAllUsersAsync();
+	}
+
+	Task<bool> CanDelete(int id)
+	{
+		return Task<bool>.Run(() => id == 0 ? true : false);
 	}
 }

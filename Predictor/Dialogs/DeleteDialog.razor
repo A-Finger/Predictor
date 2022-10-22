@@ -1,0 +1,21 @@
+﻿@using Predictor.Models.Company
+<MudDialog>
+	<DialogContent>
+		<MudText>Ви впевнені що хочете видалити @User.FirstName @User.LastName</MudText>
+	</DialogContent>
+	<DialogActions>
+		<MudButton OnClick="Cancel">Cancel</MudButton>
+		<MudButton  Variant="Variant.Filled" OnClick="Submit" Color="Color.Error">Delete</MudButton>
+	</DialogActions>
+</MudDialog>
+
+
+@code {
+	[CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
+
+	[Parameter] public User User { get; set; } = null!;
+
+	void Submit() => MudDialog.Close(DialogResult.Ok(true));
+	void Cancel() => MudDialog.Cancel();
+}
+

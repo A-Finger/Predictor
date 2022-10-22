@@ -1,38 +1,62 @@
 ﻿@page "/"
 @attribute [Authorize]
 
-<MudContainer Class="mt-4 px-4" MaxWidth="MaxWidth.False">
-	<MudGrid>
-		<MudItem xs="12" sm="6" md="4">
-			<MudPaper Elevation="2" Class="pa-1" Style="height: 150px;">1</MudPaper>
-		</MudItem>
-		<MudItem xs="12" sm="6" md="4">
-			<MudPaper Elevation="2" Class="pa-1" Style="height: 150px;">2</MudPaper>
-		</MudItem>
-		<MudItem xs="12" sm="12" md="4">
-			<MudPaper Elevation="2" Class="pa-1" Style="height: 150px;">3</MudPaper>
-		</MudItem>
-		<MudItem xs="12" sm="6">
-			<MudGrid>
-				<MudItem xs="12">
-					<MudPaper Elevation="2" Class="pa-4" Style="height: 150px;">4</MudPaper>
-				</MudItem>
-				<MudItem xs="12">
-					<MudPaper Elevation="2" Class="pa-4" Style="height: 150px;">5</MudPaper>
-				</MudItem>
-			</MudGrid>
-		</MudItem>
-		<MudItem xs="12" sm="6">
-			<MudPaper Elevation="2" Class="pa-4" Style="height: 100%"></MudPaper>
-		</MudItem>
-		<MudItem xs="12" sm="6" md="4">
-			<MudPaper Elevation="2" Class="pa-4" Style="height: 150px;"></MudPaper>
-		</MudItem>
-		<MudItem xs="12" sm="6" md="4">
-			<MudPaper Elevation="2" Class="pa-4" Style="height: 150px;"></MudPaper>
-		</MudItem>
-		<MudItem xs="12" sm="12" md="4">
-			<MudPaper Elevation="2" Class="pa-4" Style="height: 150px;"></MudPaper>
-		</MudItem>
-	</MudGrid>
-</MudContainer>
+@if (test == null)
+{
+	<MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+}
+else
+{
+
+
+	<MudContainer Class="mt-4 px-4" MaxWidth="MaxWidth.False">
+		<MudGrid>
+			<MudItem xs="12" sm="6" md="4">
+				<MudPaper Elevation="2" Class="pa-1" Style="height: 150px;">1</MudPaper>
+			</MudItem>
+			<MudItem xs="12" sm="6" md="4">
+				<MudPaper Elevation="2" Class="pa-1" Style="height: 150px;">2</MudPaper>
+			</MudItem>
+			<MudItem xs="12" sm="12" md="4">
+				<MudPaper Elevation="2" Class="pa-1" Style="height: 150px;">3</MudPaper>
+			</MudItem>
+			<MudItem xs="12" sm="6">
+				<MudGrid>
+					<MudItem xs="12">
+						<MudPaper Elevation="2" Class="pa-4" Style="height: 150px;">4</MudPaper>
+					</MudItem>
+					<MudItem xs="12">
+						<MudPaper Elevation="2" Class="pa-4" Style="height: 150px;">5</MudPaper>
+					</MudItem>
+				</MudGrid>
+			</MudItem>
+			<MudItem xs="12" sm="6">
+				<MudPaper Elevation="2" Class="pa-4" Style="height: 100%"></MudPaper>
+			</MudItem>
+			<MudItem xs="12" sm="6" md="4">
+				<MudPaper Elevation="2" Class="pa-4" Style="height: 150px;"></MudPaper>
+			</MudItem>
+			<MudItem xs="12" sm="6" md="4">
+				<MudPaper Elevation="2" Class="pa-4" Style="height: 150px;"></MudPaper>
+			</MudItem>
+			<MudItem xs="12" sm="12" md="4">
+				<MudPaper Elevation="2" Class="pa-4" Style="height: 150px;"></MudPaper>
+			</MudItem>
+		</MudGrid>
+	</MudContainer>
+}
+@code
+{
+	int? test = null;
+
+	protected override async Task OnInitializedAsync()
+	{
+		test = await Start();
+	}
+
+	private async Task<int> Start()
+	{
+		await Task.Delay(2000);
+		return 1;
+	}
+}

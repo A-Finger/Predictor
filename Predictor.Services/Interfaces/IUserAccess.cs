@@ -12,5 +12,6 @@ namespace Predictor.Services.Interfaces
         public Task<IEnumerable<JobTitle>> GetJobTitlesAsync();
         public Task<IEnumerable<UserRole>> GetUserRolesAsync();
         public Task<bool> TryAddUserAsync(User user);
+        public Task DeleteUserAsync(int id);
     }
 }
